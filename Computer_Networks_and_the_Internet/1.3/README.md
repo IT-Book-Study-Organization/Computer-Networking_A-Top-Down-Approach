@@ -49,3 +49,15 @@
 - **성과 측정**:
   - 네트워크의 성능은 Queuing Delay과 Packet Loss로 평가함.
   - 패킷 손실을 줄이기 위해 End-to-End Retransmission 사용.
+
+### Forwarding Tables and Routing Protocols
+
+- **패킷 전달**:
+  - 라우터는 도착한 패킷을 적절한 링크로 전달하기 위해 Forwarding Tables을 사용.
+  - 각 패킷은 목적지 주소를 포함하며, 라우터는 이 주소를 기반으로 Forwarding Tables을 조회.
+- **Forwarding Tables**:
+  - 목적지 주소(또는 주소의 범위)를 라우터의 출발 링크에 매핑.
+  - 라우터는 패킷의 목적지 주소를 테이블에서 찾아 알맞은 링크로 패킷을 전달.
+- **Routing Protocols**:
+  - Forwarding Tables은 수동으로 설정되지 않으며, Routing Protocols에 의해 자동으로 설정.
+  - Routing Protocols은 네트워크 내 최적 경로를 계산하여 테이블을 갱신.
