@@ -52,7 +52,13 @@ DNS 작동 과정 (www.yunjingood.edu/index.html요청 시)
   -> 이는 느리고 혼잡한 링크를 통해 전송될 수 있어 상당한 지연을 초래함
 4. 유지 관리(Maintenance): 중앙 서버는 인터넷에 존재하는 모든 호스트의 기록을 유지해야하므로 새로운 호스트 추가 시 빈번히 업데이트해야함 
 
-##### 분산형 계층적 데이터베이스
+**분산형 계층적 데이터베이스**
+DNS는 전 세계에 분산된 다수의 서버를 사용하며, 이는 계층적으로 조직되어있음. 
+
+크게 세 가지 계층으로 나뉨: 
+루트 DNS 서버 (Root DNS Servers)
+최상위 도메인(TLD) DNS 서버 (Top-Level Domain DNS Servers)
+권한 있는 DNS 서버 (Authoritative DNS Servers)
 
 
 
