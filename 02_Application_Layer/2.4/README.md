@@ -136,19 +136,16 @@ DNS 메시지에는 두가지 종류(쿼리와 응답 메시지)가 존재. 쿼�
 도메인 이름을 등록할 때는 **기본(Primary) 및 보조(Secondary) 권한 DNS 서버와 IP주소를 제공**해야한다
 
 기본 DNS서버: dns1.networkutopia.com / IP 주소: 212.2.212.1
-
 보조 DNS서버: dns2.networkutopia.com / IP 주소: 212.212.212.2
 
 등록기관은 각 권한 DNS서버에 대해 **TLD서버에 NS레코드와 A레코드를 입력** 
 
-
 NS 레코드: (networkutopia.com, dns1.networkutopia.com, NS)
-
 A 레코드: (dns1.networkutopia.com, 212.212.212.1, A)
 
 **권한 DNS 서버 설정을 위해 A레코드와 MX레코드 입력**
-웹 서버를 위한 Type A 레코드 (www.networkutopia.com)
 
+웹 서버를 위한 Type A 레코드 (www.networkutopia.com)
 메일 서버를 위한 Type MX 레코드 (mail.networkutopia.com)
 
 ---
