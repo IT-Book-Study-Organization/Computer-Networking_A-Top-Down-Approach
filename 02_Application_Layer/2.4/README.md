@@ -65,7 +65,11 @@ DNS 계층 구조의 최상위에 위치하며, TLD(최상위 도메인) 서버�
  **3. 권한 있는 DNS 서버 (Authoritative DNS Servers)**
 특정 도메인(예: amazon.com)에 대한 최종 정보를 저장하며, 호스트 이름과 해당 IP 주소 간의 매핑 정보를 제공
 
- > 139 중반 
+이에 더불어 로컬 DNS 서버가 있음. 이는 계층 구조에 속하지는 않지만 DNS 아키텍처의 중심에 있음
+
+호스트가 ISP에 연결되면 ISP는 호스트에게 로컬 DNS서버의 IP주소를 제공함. 호스트가 DNS쿼리를 수행하면 쿼리는 프록시 역할을 하는 로컬 DNS서버로 전송됨
+
+![image](https://github.com/user-attachments/assets/a5b1e17a-30f0-4f09-9ea6-11bda62043a6)
 
 
 
