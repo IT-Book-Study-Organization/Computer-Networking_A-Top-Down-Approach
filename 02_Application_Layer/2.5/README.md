@@ -1,6 +1,3 @@
-# Chapter 2
-##### Application Layer
-
 ## 2.1.5 P2P 파일 분배
 
 ### **P2P 아키텍처 개요**  
