@@ -56,6 +56,9 @@ DNS 작동 과정 (www.yunjingood.edu/index.html요청 시)
 DNS는 전 세계에 분산된 다수의 서버를 사용하며, 이는 계층적으로 조직되어있음. 
 
 크게 세 가지 계층으로 나뉨: 
+![image](https://github.com/user-attachments/assets/a5fc7e24-1320-4e09-ba1e-a0a70407f087)
+
+
  **1. 루트 DNS 서버 (Root DNS Servers)**
 DNS 계층 구조의 최상위에 위치하며, TLD(최상위 도메인) 서버의 IP 주소를 제공, 요청이 들어오면 .com, .org, .net 등 특정 TLD 서버로 요청을 전달
  
@@ -65,7 +68,7 @@ DNS 계층 구조의 최상위에 위치하며, TLD(최상위 도메인) 서버�
  **3. 권한 있는 DNS 서버 (Authoritative DNS Servers)**
 특정 도메인(예: amazon.com)에 대한 최종 정보를 저장하며, 호스트 이름과 해당 IP 주소 간의 매핑 정보를 제공
 
-이에 더불어 로컬 DNS 서버가 있음. 이는 계층 구조에 속하지는 않지만 DNS 아키텍처의 중심에 있음
+**로컬 DNS 서버**이는 계층 구조에 속하지는 않지만 DNS 아키텍처의 중심에 있음
 
 호스트가 ISP에 연결되면 ISP는 호스트에게 로컬 DNS서버의 IP주소를 제공함. 호스트가 DNS쿼리를 수행하면 쿼리는 프록시 역할을 하는 로컬 DNS서버로 전송됨
 
@@ -95,16 +98,69 @@ DNS 캐싱의 작동 방식
 루트 DNS서버에서 TLD DNS서버에 해당되는 서버들(.edu)의 IP주소들을 반환하고, TLD 서버가 또다시 재귀적으로 하위 서버인 권한있는 DNS서버(.umass.edu)에 쿼리를보냄. 
 
 그러면 권한있는 DNS는 gaia.cs.umass.edu의 IP 주소를 반환하고, 결론적으로 로컬 DNS 서버는 루트, TLD, 권한 있는 DNS 서버들로부터 받은 정보를 캐싱하고,  IP 주소를 요청 호스트에 반환. 
+
 ---
 ### 2.4.3 DNS 기록 및 메시지
+DNS서버는 **호스트 이름에서 IP주소로의 매핑을 제공하는 RR을 포함한 리소스 레코드(RRs)**을 저장
+
+#### 리소스 레코드 구성 (Name, Value, Type, TTL)
+ Name: 도메인 이름.
+ Value: Name과 관련된 값(IP 주소, 호스트 이름 등).
+ Type: 레코드 유형(A, NS, CNAME, MX 등).
+ TTL(Time to Live): 캐시에 저장될 수 있는 시간(초 단위).
+
+**리소스 레코드 유형(Type)**
+ 1. Type=A (주소 레코드): 호스트 이름과 IPv4 주소를 매핑
+ 2. Type=NS (네임 서버 레코드):  DNS 쿼리가 올바른 권한 있는 DNS 서버로 전달되도록 라우
+ 3. Type=CNAME (정식 이름 레코드): 별칭 호스트 이름을 정식 이름으로 매핑
+ 4. Type=MX (메일 교환기 레코드): 메일 서버를 위한 간단한 별칭 제공
 
 
+#### DNS Messages
+DNS 메시지에는 두가지 종류(쿼리와 응답 메시지)가 존재. 쿼리와 응답 메시지는 동일한 형식을 가짐
+![image](https://github.com/user-attachments/assets/3c964e1d-afcc-41d2-8ea5-276e17862c6a)
+
+**헤더 섹션**: 첫 12바이트, 여러 필드를 포함함
+ 첫 번째 필드는 쿼리를 식별하는 16비트. 
+ 플래그 필드에는 여러 플래그가 있음. 일단은 메시지가 쿼리(0)인지 응답(1)인지 나타내는 1비트쿼리/응답 플래그 외에 3개 플래그 더 있음. 
+
+**메시지 본문**
+- 질문 섹션(Questions): 쿼리에 대한 이름과 타입 필드를 포함하는 가변 길이 섹션
+- 응답 섹션(Answers): 쿼리에 대한 응답으로 리소스 레코드(RR)를 포함하는 가변 길이 섹션
+- 권한 섹션(Authority): 권한 있는 서버에 대한 레코드를 포함하는 가변 길이 섹션
+- 추가 정보 섹션(Additional information): 추가적인 "도움이 되는" 정보를 포함하는 가변 길이 섹션
+
+> DNS 쿼리를 직접 보내려면 nslookup 프로그램을 사용할 수 있음
 
 
+#### DNS 데이터베이스에 레코드 삽입
+도메인 네임 networkutopia.com을 등록 기관(DNS registrar)에 등록한다고 가정
 
+등록기관은 도메인 이름의 고유성을 확인하고 DNS데이터베이스에 도메인 이름을 입력함
+현재는 여러 등록기관이 경쟁하고 있으며, ICANN(Internet Corporation for Assigned Names and Numbers)이 이들을 인증해주고 있다.
 
+도메인 이름을 등록할 때는 **기본(Primary) 및 보조(Secondary) 권한 DNS 서버와 IP주소를 제공**해야한다
+기본 DNS서버: dns1.networkutopia.com / IP 주소: 212.2.212.1
+보조 DNS서버: dns2.networkutopia.com / IP 주소: 212.212.212.2
 
+등록기관은 각 권한 DNS서버에 대해 **TLD서버에 NS레코드와 A레코드를 입력** 
+NS 레코드: (networkutopia.com, dns1.networkutopia.com, NS)
+A 레코드: (dns1.networkutopia.com, 212.212.212.1, A)
 
+**권한 DNS 서버 설정을 위해 A레코드와 MX레코드 입력**
+웹 서버를 위한 Type A 레코드 (www.networkutopia.com)
+메일 서버를 위한 Type MX 레코드 (mail.networkutopia.com)
+
+---
+#### DNS VULNERABILITIES
+**2002년 DNS 대역폭 플러 공격**
+ - ICMP 핑 메시지를 사용하여 13개의 DNS 루트 IP 주소를 공격하여 패킷의 홍수를 유도
+ - 패킷 필터링과 DNS 캐싱 덕분에 최소한의 피해로 막음
+
+**2016년 최상위 도메인 서비스 제공업체Dyn 공격**
+ - IoT 기기로 구성된 Mirai 봇넷을 통한 대규모 DDoS 공격 실행
+ - 약 10만 개의 프린터, IP 카메라, 게이트웨이, 베이비 모니터 등이 감염됨
+ - Amazon, Twitter, Netflix, Github, Spotify 등 주요 서비스 중단
 
 
 
