@@ -10,13 +10,17 @@
   - **전송 속도(R):** 1 Gbps  
   - **패킷 크기(L):** 1,000 bytes (8,000 bits)  
   - **패킷 전송 시간(dtrans):**  
+    $$
     \[
     d_{\text{trans}} = \frac{L}{R} = \frac{8,000 \text{ bits}}{10^9 \text{ bits/sec}} = 8 \text{ microseconds}
     \]
+    $$
   - **송신기 이용률(Usender):**  
+    $$
     \[
     U_{\text{sender}} = \frac{L / R}{RTT + L / R} = \frac{0.008 \text{ ms}}{30.008 \text{ ms}} = 0.00027
     \]
+    $$
     **해석:** 실제 1 Gbps의 링크를 사용하지만, 실질적인 전송률은 267 kbps에 불과함.  
 
 **결과:** 송신기가 패킷을 전송한 후 ACK를 기다리는 동안 대기 시간이 길어져, 고속 네트워크 환경에서도 대역폭을 효과적으로 사용하지 못함.
