@@ -1,6 +1,3 @@
-# **Pipelined Reliable Data Transfer Protocols**   
-###### Stop-and-Wait 프로토콜의 성능 문제와 파이프라이닝 개념  
-
 ## 3.4.2 Pipelined Reliable Data Transfer Protocols
 
 ### **1. Stop-and-Wait 프로토콜의 문제점**  
