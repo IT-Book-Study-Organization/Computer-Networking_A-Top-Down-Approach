@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/2ee4b8a3-74b7-477e-9dfd-969524e4228c)## 3.4 Principles of Reliable Data Transfer
+## 3.4 Principles of Reliable Data Transfer
 
 ### 개요
 - 신뢰성 있는 데이터 전송 문제는 네트워킹에서 중요한 문제로, 전송 계층, 링크 계층, 애플리케이션 계층에서도 발생함.
