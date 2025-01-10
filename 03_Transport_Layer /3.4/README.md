@@ -111,30 +111,28 @@
 
 ### **3.10 - a : rdt2.0 송신기 동작**
 
-1. **상태 1: Wait for call from above**
+**상태 1 : Wait for call from above**
    - 송신기는 상위 계층에서 `rdt_send(data)` 호출이 발생할 때까지 대기.
    - 호출이 발생하면 `make_pkt(data, checksum)`을 통해 데이터를 포함한 패킷을 생성하고 `udt_send(sndpkt)`로 전송.
    - 이후 ACK 또는 NAK 응답을 기다리는 상태로 전이함.
 
-2. **상태 2: Wait for ACK or NAK**
+**상태 2 : Wait for ACK or NAK**
    - 수신자로부터 ACK 또는 NAK 응답을 대기.
    - `rdt_rcv(rcvpkt) && isACK(rcvpkt)` 조건이 충족되면 ACK 수신으로 간주하고, 상태 1로 돌아가 새로운 데이터를 수신할 준비를 함.
    - `rdt_rcv(rcvpkt) && isNAK(rcvpkt)` 조건이 충족되면 NAK 수신으로 간주하고 이전에 전송한 패킷을 재전송한 후 상태 2를 유지함.
 
-3. **Stop-and-Wait 특성**
+**Stop-and-Wait 특성**
    - 송신기는 ACK를 받을 때까지 새로운 데이터를 전송하지 않음.
    - 이 동작 방식 때문에 rdt2.0은 **Stop-and-Wait 프로토콜**로 분류됨.
 
 ### **3.10 - b : rdt2.0 수신기 동작**
 
-1. **패킷 수신 대기**
+**상태 1 : Wait for call from below**
    - 수신기는 `rdt_rcv(rcvpkt)` 호출이 발생할 때까지 대기.
-   
-2. **패킷 검증 및 응답**
    - `rdt_rcv(rcvpkt) && corrupt(rcvpkt)` 조건이 충족되면 패킷이 손상된 것으로 간주하고 NAK를 생성하여 `udt_send(sndpkt)`로 전송.
    - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt)` 조건이 충족되면 패킷이 정상임을 확인하고 데이터를 추출한 후 상위 계층으로 전달(`deliver_data(data)`)하고 ACK를 전송.
 
-3. **NAK와 ACK 동작**
+**NAK와 ACK 동작**
    - 손상된 패킷에 대해 NAK 응답을 보내 송신자가 재전송하도록 함.
    - 정상 패킷에 대해 ACK 응답을 보내 다음 데이터 전송을 요청함.
 
@@ -162,20 +160,20 @@
 
 ![image](https://github.com/user-attachments/assets/e8cfd933-d1f7-42e7-854a-1422452e8470)
 
-**상태 1: Wait for call 0 from above**
+**상태 1 : Wait for call 0 from above**
    - 상위 계층에서 `rdt_send(data)` 호출이 발생하면 시퀀스 번호 `0`을 포함한 패킷을 생성하고 전송.
    - 이후 ACK 또는 NAK 응답을 기다리는 상태로 전이.
 
-**상태 2: Wait for ACK or NAK 0**
+**상태 2 : Wait for ACK or NAK 0**
    - 수신기로부터 ACK 또는 NAK 응답을 대기.
    - `rdt_rcv(rcvpkt) && isACK(rcvpkt)` 조건을 만족하면 ACK 수신으로 간주하고 상태 3으로 전이.
    - `rdt_rcv(rcvpkt) && (corrupt(rcvpkt) || isNAK(rcvpkt))` 조건을 만족하면 NAK 수신으로 간주하고 패킷을 재전송한 후 상태 유지.
 
-**상태 3: Wait for call 1 from above**
+**상태 3 : Wait for call 1 from above**
    - 상위 계층에서 새로운 데이터가 오면 시퀀스 번호 `1`을 포함한 패킷을 생성하고 전송.
    - 이후 ACK 또는 NAK 응답을 기다리는 상태로 전이.
 
-**상태 4: Wait for ACK or NAK 1**
+**상태 4 : Wait for ACK or NAK 1**
    - 상태 2와 유사하게 동작하되, 시퀀스 번호 `1`에 대한 ACK 또는 NAK 응답을 처리.
 
 ---
