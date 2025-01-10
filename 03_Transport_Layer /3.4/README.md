@@ -33,6 +33,7 @@
 
 ### Reliable Data Transfer over a Perfectly Reliable Channel: rdt1.0
 
+- **rdt(신뢰적 데이터 전송)** : 하위 계층에서 상위 계층에서 데이터를 전송할 때 전송된 데이터가 손상되거나 손실되지 않게 보장하는 개념
 - rdt1.0은 **완벽히 신뢰성 있는 채널**을 가정하여 설계된 가장 단순한 프로토콜임.
 - 이 프로토콜에서는 데이터 손상, 손실, 순서 뒤바뀜이 전혀 발생하지 않음.
 - rdt1.0의 송신기와 수신기는 각각 하나의 상태만 가지며, FSM(Finite-State Machine, 유한 상태 기계, 상태(state)를 기반으로 동작을 제어하는 방식을 구현하기 위한 디자인 패턴)은 간단한 전이 구조로 이루어짐.
@@ -41,7 +42,6 @@
 
 ### **3.9 - a : rdt1.0 송신기 동작**
 - **상태**: 상위 계층에서 호출을 대기함.
-- **이벤트**: `rdt_send(data)` 호출 시 동작 시작.
 - **동작**:
  1. `make_pkt(data)`로 데이터를 포함한 패킷 생성.
  2. `udt_send(packet)`을 호출하여 비신뢰 채널에 패킷 전송.
@@ -49,7 +49,6 @@
 
 ### **3.9 - b : rdt1.0 수신기 동작**
 - **상태**: 하위 계층에서 호출을 대기함.
-- **이벤트**: `rdt_rcv(packet)` 호출 시 동작 시작.
 - **동작**:
  1. `extract(packet, data)`로 패킷에서 데이터를 추출.
  2. `deliver_data(data)`를 호출하여 상위 계층에 데이터 전달.
@@ -59,6 +58,8 @@
 - 패킷은 송신기에서 수신기로만 전송되며, 수신기가 송신기에게 피드백을 보낼 필요가 없음.
 - 완벽한 신뢰성 있는 채널을 가정하므로 패킷 손실이나 오류가 발생하지 않음.
 - 수신 속도가 송신 속도와 동일하다고 가정하므로, 송신 속도 제어가 필요하지 않음.
+
+---
 
 ### Reliable Data Transfer over a Channel with Bit Errors: rdt2.0
 
@@ -137,6 +138,139 @@
    - 손상된 패킷에 대해 NAK 응답을 보내 송신자가 재전송하도록 함.
    - 정상 패킷에 대해 ACK 응답을 보내 다음 데이터 전송을 요청함.
 
+### ACK/NAK 문제
+- ACK 또는 NAK 패킷이 손상될 수 있으며, 송신자는 수신자가 데이터를 제대로 수신했는지 알 수 없음.
+- ACK/NAK 패킷 손상으로 인해 송신자는 중복 패킷을 전송하거나 데이터 무결성이 깨질 위험이 있음.
+
+### 해결책
+- **체크섬 추가**  
+   - ACK 및 NAK 패킷에 체크섬 필드를 추가하여 오류를 감지함.
+
+- **시퀀스 번호 추가**  
+   - 데이터 패킷에 **1비트 시퀀스 번호**를 추가하여 수신자가 중복 패킷 여부를 판단할 수 있도록 함.  
+   - 수신자는 시퀀스 번호를 통해 새 패킷인지 이전에 수신한 패킷인지 구별하여 중복 수신 문제를 해결함.  
+   - 시퀀스 번호는 **modulo-2 연산**을 사용하여 `0`과 `1`을 반복함.(**모듈로-2 연산(modulo-2 arithmetic)** : 값을 2로 나눈 나머지를 구하는 연산 방식. 결과값은 항상 0 또는 1이 됨)
+
+---
+
+### rdt2.1 and rdt2.2
+- **rdt2.1**은 **rdt2.0**에서 발생한 ACK/NAK 손상 문제를 해결하기 위해 시퀀스 번호(0 또는 1)를 도입하여 개선한 프로토콜임.
+- 송신기와 수신기의 상태 수가 기존보다 2배로 증가하였으며, 각 상태에서 송신 및 수신되는 패킷에 대한 시퀀스 번호를 관리함.
+- **rdt2.2**는 NAK 없는 프로토콜(NAK-free protocol)로, 수신기가 NAK 대신 **중복 ACK**를 전송하여 손상된 패킷을 처리함.
+
+### 3.11 : rdt2.1 송신기 동작
+
+![image](https://github.com/user-attachments/assets/e8cfd933-d1f7-42e7-854a-1422452e8470)
+
+**상태 1: Wait for call 0 from above**
+   - 상위 계층에서 `rdt_send(data)` 호출이 발생하면 시퀀스 번호 `0`을 포함한 패킷을 생성하고 전송.
+   - 이후 ACK 또는 NAK 응답을 기다리는 상태로 전이.
+
+**상태 2: Wait for ACK or NAK 0**
+   - 수신기로부터 ACK 또는 NAK 응답을 대기.
+   - `rdt_rcv(rcvpkt) && isACK(rcvpkt)` 조건을 만족하면 ACK 수신으로 간주하고 상태 3으로 전이.
+   - `rdt_rcv(rcvpkt) && (corrupt(rcvpkt) || isNAK(rcvpkt))` 조건을 만족하면 NAK 수신으로 간주하고 패킷을 재전송한 후 상태 유지.
+
+**상태 3: Wait for call 1 from above**
+   - 상위 계층에서 새로운 데이터가 오면 시퀀스 번호 `1`을 포함한 패킷을 생성하고 전송.
+   - 이후 ACK 또는 NAK 응답을 기다리는 상태로 전이.
+
+**상태 4: Wait for ACK or NAK 1**
+   - 상태 2와 유사하게 동작하되, 시퀀스 번호 `1`에 대한 ACK 또는 NAK 응답을 처리.
+
+---
+
+### 3.12 : rdt2.1 수신기 동작
+
+![image](https://github.com/user-attachments/assets/a987d906-8cb3-4ea7-85c7-0a208b40d1eb)
+
+**상태 1: Wait for 0 from below**
+   - `rdt_rcv(rcvpkt) && corrupt(rcvpkt)` 조건을 만족하면 패킷이 손상된 것으로 간주하고 NAK를 전송.
+   - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && has_seq0(rcvpkt)` 조건을 만족하면 패킷을 정상 수신한 것으로 간주하고 데이터를 상위 계층으로 전달한 후 ACK를 전송하며 상태 2로 전이.
+
+**상태 2: Wait for 1 from below**
+   - 상태 1과 유사하게 동작하되, 시퀀스 번호 `1`에 대한 패킷을 처리.
+
+---
+
+### 3.13 : rdt2.2 송신기 동작
+
+![image](https://github.com/user-attachments/assets/f3eb1a69-c40d-4af7-bfbe-4b383f15aa08)
+
+**상태1 : Wait for call 0 from above**  
+   - 송신기는 상위 계층에서 `rdt_send(data)` 호출이 발생할 때까지 대기.  
+   - 호출이 발생하면 시퀀스 번호 '0'과 체크섬을 포함한 패킷을 생성한 후 전송(`udt_send(sndpkt)`).  
+   - 이후 **Wait for ACK 0** 상태로 전이하여 ACK 응답을 기다림.
+
+**상태2 : Wait for ACK 0**  
+   - 송신기는 ACK 패킷 수신을 대기하며, 다음 두 경우에 따라 동작:  
+   - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && isACK(rcvpkt, 0)` 조건을 만족하면 ACK 0이 수신된 것으로 간주하고 **Wait for call 1 from above** 상태로 전이.  
+   - `rdt_rcv(rcvpkt) && (corrupt(rcvpkt) || isACK(rcvpkt, 1))` 조건을 만족하면 NAK 또는 잘못된 ACK로 간주하고 이전 패킷을 재전송한 후 상태 유지.
+
+**상태3 : Wait for call 1 from above**  
+   - 상위 계층에서 새로운 데이터가 전달되면 시퀀스 번호 '1'과 체크섬을 포함한 패킷을 생성하여 전송.  
+   - 이후 **Wait for ACK 1** 상태로 전이.
+
+**상태4 : Wait for ACK 1**  
+   - 송신기는 ACK 패킷 수신을 대기하며, 다음 두 경우에 따라 동작:  
+   - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && isACK(rcvpkt, 1)` 조건이 충족되면 ACK 1이 수신된 것으로 간주하고 **Wait for call 0 from above** 상태로 전이.  
+   - `rdt_rcv(rcvpkt) && (corrupt(rcvpkt) || isACK(rcvpkt, 0))` 조건을 만족하면 NAK 또는 잘못된 ACK로 간주하고 이전 패킷을 재전송한 후 상태 유지.
+
+---
+
+### 3.14 : rdt2.2 수신기 동작
+
+![image](https://github.com/user-attachments/assets/61441d1c-9ffb-4625-b1cb-e1931fb35c72)
+
+**상태 1 : Wait for 0 from below**  
+   - 하위 계층에서 시퀀스 번호 '0'에 해당하는 패킷 수신을 대기.  
+   - 수신한 패킷에 따라 다음과 같이 동작:  
+     - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && has_seq0(rcvpkt)` 조건이 충족되면 정상 패킷으로 간주하고 데이터를 상위 계층으로 전달한 후 ACK 0을 전송.  
+     - `rdt_rcv(rcvpkt) && (corrupt(rcvpkt) || has_seq1(rcvpkt))` 조건이 충족되면 손상된 패킷 또는 잘못된 시퀀스 번호의 패킷으로 간주하고 ACK 1을 재전송한 후 상태 유지.
+
+2. **상태 2 : Wait for 1 from below**  
+   - 하위 계층에서 시퀀스 번호 '1'에 해당하는 패킷 수신을 대기.  
+   - 수신한 패킷에 따라 다음과 같이 동작:  
+     - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && has_seq1(rcvpkt)` 조건이 충족되면 정상 패킷으로 간주하고 데이터를 상위 계층으로 전달한 후 ACK 1을 전송.  
+     - `rdt_rcv(rcvpkt) && (corrupt(rcvpkt) || has_seq0(rcvpkt))` 조건이 충족되면 손상된 패킷 또는 잘못된 시퀀스 번호의 패킷으로 간주하고 ACK 0을 재전송한 후 상태 유지.
+
+---
+
+### Reliable Data Transfer over a Lossy Channel with Bit Errors: rdt3.0
+
+- rdt3.0 : **비트 오류**와 **패킷 손실**을 모두 처리할 수 있는 신뢰성 있는 데이터 전송 프로토콜
+- 이전 버전인 rdt2.2는 비트 오류를 처리할 수 있었으나 패킷 손실에 대해서는 대처할 수 없었음.
+- **타이머 기반 재전송 메커니즘**을 도입하여 일정 시간 내에 ACK를 받지 못할 경우 패킷을 재전송함으로써 패킷 손실 문제를 해결.
+
+### 핵심 기능
+1. **타이머 기반 재전송**: 송신기는 패킷을 전송한 후 타이머를 시작하고, 일정 시간 내에 ACK를 받지 못하면 패킷을 재전송함.
+2. **Stop-and-Wait 프로토콜**: 송신기는 ACK를 받을 때까지 새로운 데이터를 전송하지 않고 대기함.
+
+---
+
+### 3.15 : rdt 3.0 송신기 동작
+
+![image](https://github.com/user-attachments/assets/c7f29156-04d2-47a3-8c9e-9d4335c60860)
+
+**상태 1 : Wait for call 0 from above**
+   - 상위 계층에서 데이터를 수신하면 시퀀스 번호 **0**과 체크섬을 포함한 패킷을 생성하고 전송(`udt_send(sndpkt)`), 이후 타이머를 시작(`start_timer`)함.
+   - 이후 **Wait for ACK 0** 상태로 전이하여 ACK 수신을 대기함.
+
+**상태 2 : Wait for ACK 0**
+   - 송신기는 ACK 패킷 수신을 대기하며, 다음 조건에 따라 동작:
+     - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && isACK(rcvpkt, 0)` 조건이 충족되면 ACK 0 수신으로 간주하고 타이머를 중지(`stop_timer`)한 후 **Wait for call 1 from above** 상태로 전이.
+     - `timeout` 발생 시 이전에 전송한 패킷을 재전송(`udt_send(sndpkt)`)하고 타이머를 다시 시작(`start_timer`).
+
+**상태 3 : Wait for call 1 from above**
+   - 상위 계층에서 새로운 데이터를 수신하면 시퀀스 번호 **1**과 체크섬을 포함한 패킷을 생성하여 전송하고 타이머를 시작.
+   - 이후 **Wait for ACK 1** 상태로 전이.
+
+**상태 4 : for ACK 1**
+   - 송신기는 ACK 1 수신을 대기하며, 다음 조건에 따라 동작:
+     - `rdt_rcv(rcvpkt) && notcorrupt(rcvpkt) && isACK(rcvpkt, 1)` 조건이 충족되면 ACK 1 수신으로 간주하고 타이머를 중지한 후 **Wait for call 0 from above** 상태로 전이.
+     - `timeout` 발생 시 이전 패킷을 재전송하고 타이머를 다시 시작.
+
+---
 
 ## 3.4.2 Pipelined Reliable Data Transfer Protocols
 
