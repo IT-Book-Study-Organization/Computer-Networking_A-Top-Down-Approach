@@ -382,5 +382,5 @@ Selective Repeat(SR) 프로토콜은 **필요한 패킷만 선택적으로 재�
   - 각 패킷마다 개별적인 타이머와 버퍼링이 필요하므로 구현이 복잡함.  
   - 시퀀스 번호 재사용 시 데이터 중복 문제 발생 가능.
 
-#### [참조(GBN/SR Animation)](https://www.tkn.tu-berlin.de/teaching/rn/animations/gbn_sr/)
-#### [영상(GBN/SR Animation)](https://www.youtube.com/watch?v=Cs8tR8A9jm8)
+#### [참조(SR Animation)](https://www.tkn.tu-berlin.de/teaching/rn/animations/gbn_sr/)
+#### [영상(SR Animation)](https://www.youtube.com/watch?v=Cs8tR8A9jm8)
