@@ -96,7 +96,8 @@ HTTP는 텍스트를 포함한 웹 페이지의 신뢰성이 중요하기 때문
 
 **실제 사용되는 애플리케이션들에서 인기있는 전송 프로토콜**
 
-![[Pasted image 20250110183750.png]]
+![image](https://github.com/user-attachments/assets/8180e08b-35c3-4d86-a3b3-1250a9d4a8bc)
+
 
 인터넷 전화, 실시간 화상 회의, 저장된 오디오 및 비디오 스트리밍과 같은 멀티미디어 애플리케이션에서는 UDP/TCP 모두 사용되는 경우가 있음. 이러한 애플리케이션들은 소량의 패킷 손실이 허용되므로, 신뢰할 수 있는 데이터 전송이 필수적인 요소가 아님.
 
@@ -126,7 +127,7 @@ UDP를 사용할 때도 애플리케이션이 신뢰할 수 있는 데이터 전
 
 ***3.3.1 UDP Segment Structure***
 
-![[Pasted image 20250110190046.png]]
+![image](https://github.com/user-attachments/assets/07dace65-fa07-4260-8001-c31c5197c436)
 
 - 애플리케이션 데이터는 UDP 세그먼트의 데이터 필드에 위치.
 
