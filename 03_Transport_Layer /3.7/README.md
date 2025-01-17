@@ -203,6 +203,8 @@ TCP Reno는 AIMD 방식을 기반으로 혼잡 제어를 수행하며, 안정적
 - **장점**:  
   패킷 손실 없이도 혼잡 상태를 감지해 네트워크 효율성을 높이고, 대규모 데이터 전송에서도 안정적인 성능을 제공합니다.
 
+![Screenshot 2025-01-17 at 8 22 35 PM](https://github.com/user-attachments/assets/7a381728-e827-4402-8d8e-bff15146d5a9)
+
 #### **2. 지연 기반 혼잡 제어 (Delay-Based Congestion Control)**
 - **개념**:  
   RTT(지연 시간)를 기반으로 혼잡을 예측해 패킷 손실이 발생하기 전에 송신 속도를 조절하는 방식입니다.
@@ -216,8 +218,6 @@ TCP Reno는 AIMD 방식을 기반으로 혼잡 제어를 수행하며, 안정적
 
 ### 3.7.3 TCP 공정성과 네트워크 자원 배분
 TCP 공정성(Fairness)은 병목 링크에서 모든 송신자가 대역폭을 공평하게 나누는 것을 목표로 합니다. 그러나 RTT 차이, 병렬 연결 등으로 인해 공정성 달성에 어려움이 있습니다.
-
-![Screenshot 2025-01-17 at 8 22 35 PM](https://github.com/user-attachments/assets/7a381728-e827-4402-8d8e-bff15146d5a9)
 
 #### **공정성 저해 요인**
 - **UDP 트래픽**:  
