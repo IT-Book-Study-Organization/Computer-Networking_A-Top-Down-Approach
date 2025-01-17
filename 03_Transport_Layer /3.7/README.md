@@ -185,7 +185,7 @@ TCP Reno는 AIMD 방식을 기반으로 혼잡 제어를 수행하며, 안정적
   - 손실 이후 회복 속도가 느리고 대역폭 활용도가 낮음.
   - Cubic 대비 대역폭 활용 능력이 부족.
 
-[]
+![Screenshot 2025-01-17 at 8 12 24 PM](https://github.com/user-attachments/assets/3500dc5b-d87e-4d35-add3-7c5ef23badbb)
 
 ---
 
@@ -216,7 +216,7 @@ TCP Reno는 AIMD 방식을 기반으로 혼잡 제어를 수행하며, 안정적
 ### TCP 공정성과 네트워크 자원 배분
 TCP 공정성(Fairness)은 병목 링크에서 모든 송신자가 대역폭을 공평하게 나누는 것을 목표로 합니다. 그러나 RTT 차이, 병렬 연결 등으로 인해 공정성 달성에 어려움이 있습니다.
 
-[]
+![Screenshot 2025-01-17 at 8 22 35 PM](https://github.com/user-attachments/assets/7a381728-e827-4402-8d8e-bff15146d5a9)
 
 #### **공정성 저해 요인**
 - **UDP 트래픽**:  
