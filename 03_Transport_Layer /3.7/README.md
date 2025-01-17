@@ -190,7 +190,7 @@ TCP Reno는 AIMD 방식을 기반으로 혼잡 제어를 수행하며, 안정적
 
 ---
 
-### 네트워크 혼잡 제어의 최신 접근법
+### 3.7.2 네트워크 혼잡 제어의 최신 접근법
 
 #### **1. 명시적 혼잡 알림 (Explicit Congestion Notification, ECN)**
 - **개념**:  
@@ -214,7 +214,7 @@ TCP Reno는 AIMD 방식을 기반으로 혼잡 제어를 수행하며, 안정적
 
 ---
 
-### TCP 공정성과 네트워크 자원 배분
+### 3.7.3 TCP 공정성과 네트워크 자원 배분
 TCP 공정성(Fairness)은 병목 링크에서 모든 송신자가 대역폭을 공평하게 나누는 것을 목표로 합니다. 그러나 RTT 차이, 병렬 연결 등으로 인해 공정성 달성에 어려움이 있습니다.
 
 ![Screenshot 2025-01-17 at 8 22 35 PM](https://github.com/user-attachments/assets/7a381728-e827-4402-8d8e-bff15146d5a9)
