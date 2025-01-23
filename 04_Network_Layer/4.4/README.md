@@ -1,4 +1,6 @@
-### **4.4 Generalized Forwarding and SDN**
+# **4.4 Generalized Forwarding and SDN**
+
+<img width="644" alt="Screenshot 2025-01-23 at 10 26 35 PM" src="https://github.com/user-attachments/assets/f2323430-c24f-404d-a856-89b886c82a32" />
 
 ### **1. 일반화된 포워딩의 개념**
 
@@ -34,6 +36,8 @@
 ---
 
 ### **4.4.1 Match**
+
+<img width="908" alt="Screenshot 2025-01-23 at 10 26 14 PM" src="https://github.com/user-attachments/assets/5195c5bd-6000-47ca-b828-7a2c75a9675c" />
 
 #### **주요 특징**
 
@@ -95,6 +99,8 @@
 ---
 
 ### **4.4.3 OpenFlow Examples of Match-plus-action in Action**
+
+<img width="651" alt="Screenshot 2025-01-23 at 10 25 36 PM" src="https://github.com/user-attachments/assets/498039d8-8452-494e-b857-e33b0e2a15c4" />
 
 #### **1. 일반화된 포워딩: 매치와 액션의 활용**
 
