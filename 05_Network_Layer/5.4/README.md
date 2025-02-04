@@ -22,6 +22,8 @@ BGP가 없다면, AS 간 연결이 불가능하여 인터넷이 정상적으로 
 
 BGP는 AS 간의 프리픽스 도달 가능성 정보를 공유하여, 인터넷의 모든 라우터가 특정 네트워크를 인식할 수 있도록 한다.
 
+![Screenshot 2025-02-05 at 2 47 45 AM](https://github.com/user-attachments/assets/39748087-4207-43f4-a00c-ffd65216ea0f)
+
 #### 경로 광고 예시
 1. AS3가 AS2에 **"AS3 x"** 메시지를 보냄.
 2. AS2가 AS1에 **"AS2 AS3 x"** 메시지를 전달.
@@ -29,13 +31,11 @@ BGP는 AS 간의 프리픽스 도달 가능성 정보를 공유하여, 인터넷
 
 이를 통해 AS1과 AS2는 프리픽스 x의 존재뿐만 아니라 **x로 가는 경로(AS 경로 정보)**까지 학습할 수 있다.
 
-!!사진 5.8!!
-
 ### BGP 메시지 전달 방식
 
 BGP는 반영구적인 TCP 연결(포트 179)을 유지하며, **eBGP(External BGP)와 iBGP(Internal BGP)**를 통해 정보를 전달한다.
 
-!!사진 5.9!!
+![Screenshot 2025-02-05 at 2 47 54 AM](https://github.com/user-attachments/assets/c00475ad-3845-49bd-bfbf-5fae29143648)
 
 - **eBGP**: AS 간 BGP 연결 (예: AS1의 라우터 1c ↔ AS2의 라우터 2a)
 - **iBGP**: AS 내부 BGP 연결 (예: AS2 내부의 모든 라우터 간 연결)
@@ -65,7 +65,7 @@ BGP는 프리픽스를 광고할 때 여러 속성을 포함하여 경로 정보
   - "AS3 x" (3 홉)
   - 홉 수가 적은 "AS2 AS3 x"를 선택.
 
-!!사진 5.10!!
+![Screenshot 2025-02-05 at 2 48 01 AM](https://github.com/user-attachments/assets/b6da896a-3b94-4ea4-bbcc-a97f32e8c6b1)
 
 ### BGP의 경로 선택 알고리즘
 
