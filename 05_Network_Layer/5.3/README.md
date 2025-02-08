@@ -1,7 +1,8 @@
-# 5.3 인터넷에서의 AS 내 라우팅: OSPF (Intra-AS Routing in the Internet: OSPF)
+# 5.3 Intra-AS Routing in the Internet: OSPF
 
 ```
-인터넷은 자율 시스템(Autonomous System, AS)으로 구성되어 있으며, 각 AS 내부에서 실행되는 라우팅 프로토콜을 AS 내 라우팅 프로토콜(Intra-AS Routing Protocol) 또는 IGP(Interior Gateway Protocol)라고 한다. 
+인터넷은 자율 시스템(Autonomous System, AS)으로 구성되어 있으며,
+각 AS 내부에서 실행되는 라우팅 프로토콜을 AS 내 라우팅 프로토콜(Intra-AS Routing Protocol) 또는 IGP(Interior Gateway Protocol)라고 한다. 
 이 중 OSPF(Open Shortest Path First)는 가장 널리 사용되는 AS 내 라우팅 프로토콜 중 하나이다.
 ```
 
@@ -20,6 +21,9 @@ OSPF는 링크 상태 라우팅(Link-State Routing) 프로토콜이며, AS 내�
 - LSA 정보를 수집하여 **링크 상태 데이터베이스(LSDB, Link-State Database)** 를 구축.
 - LSDB를 기반으로 SPF 알고리즘을 실행하여 **포워딩 테이블**을 생성.
 
+*다익스트라 알고리즘* : 네트워크의 전체 토폴로지를 분석한 후, 각 노드에서 최단 경로를 계산하는 데 사용. 이를 통해 각 라우터는 최적의 포워딩 테이블을 구축하여 효율적인 패킷 전달을 수행할 수 있음.
+*링크 상태 광고*: 네트워크의 현재 상태(연결된 라우터, 링크 비용 등)를 네트워크 내 모든 라우터에게 전파하는 역할
+
 ---
 
 ## OSPF의 주요 특징
@@ -27,7 +31,9 @@ OSPF는 링크 상태 라우팅(Link-State Routing) 프로토콜이며, AS 내�
 1. **계층적 라우팅(Hierarchical Routing)**
    - OSPF는 **영역(Area)** 개념을 도입하여 네트워크를 계층적으로 관리.
    - 모든 OSPF 영역은 **백본 영역(Area 0)** 과 연결되어야 함.
-   - **ABR(Area Border Router)** 는 여러 영역을 연결하고, **ASBR(Autonomous System Border Router)** 는 다른 AS와 연결됨.
+   - **ABR(Area Border Router)** 은 여러 영역을 연결하고, **ASBR(Autonomous System Border Router)** 은 다른 AS와 연결됨.
+  
+*백본 영역*: 모든 OSPF 영역이 반드시 연결되어야 하는 중앙 허브 역할로, 다른 영역 간의 경로 정보를 교환하는 중심 역할.
 
 2. **라우팅 갱신 시 LSA 사용**
    - OSPF는 **라우팅 업데이트를 정기적으로 전송하지 않음** (BGP와 대비됨).
