@@ -40,3 +40,5 @@ ICMPv6는 IPv6에서 필수적인 요소로 작용하며, 네트워크 계층에
 - ICMPv6 추가 기능
   - **Packet Too Big** 유형 추가 (MTU 문제 대응)
   - **인식할 수 없는 IPv6 옵션** 오류 코드 추가
+ 
+*MTU? Maximum Transmission Unit, 네트워크에서 전송할 수 있는 최대 패킷 크기와 관련된 이슈로 ICMPv6 에서는 'Packet Too Big'을 사용하여 송신자에게 패킷 크기를 줄이도록 알려준다.* 
